@@ -37,16 +37,31 @@ module.exports = (passport) => {
     router.get('/home', isAuthenticated, (request, response) => {
         response.send('home page');
     });
-
-    // router.get('/home', isAuthenticated, (request, response) => {
-    //     response.render('home', {user: request.user})
-    // });
     
     router.get('/signout', (request, response) => {
         request.logout();
         response.redirect('/');
     });
     
+    router.get('/login/facebook', passport.authenticate('facebook', { scope : 'email' }
+	));
+
+	// handle the callback after facebook has authenticated the user
+	router.get('/login/facebook/callback',
+		passport.authenticate('facebook', {
+			successRedirect : '/home',
+			failureRedirect : '/'
+		})
+	);
+
+    router.get('/login/twitter', passport.authenticate('twitter'));
+
+    router.get('/login/twitter/callback', passport.authenticate('twitter', {
+        successRedirect : '/home',
+        failureRedirect : '/'
+    })
+);
+
     return router;
 
 }

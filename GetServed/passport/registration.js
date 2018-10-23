@@ -23,10 +23,10 @@ module.exports = (passport) => {
                     } else {
                         var newUser = new User();
 
-                        newUser.email = email;
-                        newUser.password = createHash(password);
-                        newUser.fullName = request.body.fullName;
-                        newUser.pincode = request.body.pincode;
+                        newUser.local.email = email;
+                        newUser.local.password = createHash(password);
+                        newUser.local.fullName = request.body.fullName;
+                        newUser.local.pincode = request.body.pincode;
 
                         newUser.save((err) => {
                             if(err){

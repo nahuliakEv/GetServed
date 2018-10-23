@@ -4,7 +4,24 @@ var Schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
 
 var userSchema = new Schema({
-    id: Number,
+
+    fb: {
+        id: String,
+		access_token: String,
+		firstName: String,
+		lastName: String,
+		email: String
+    },
+
+    twitter: {
+		id: String,
+		token: String,
+		username: String,
+        displayName: String 
+       },
+    
+    local: {
+        id: Number,
     fullName: {
         type: String,
         required: true
@@ -25,6 +42,7 @@ var userSchema = new Schema({
     type: {
         type: String,
         default: "Client"
+    }
     }
 },
 {
