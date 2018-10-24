@@ -56,11 +56,21 @@ module.exports = (passport) => {
 
     router.get('/login/twitter', passport.authenticate('twitter'));
 
-    router.get('/login/twitter/callback', passport.authenticate('twitter', {
-        successRedirect : '/home',
-        failureRedirect : '/'
-    })
-);
+    router.get('/login/twitter/callback',
+        passport.authenticate('twitter', {
+            successRedirect: '/home',
+            failureRedirect: '/'
+        })
+    );
+
+    router.get('/login/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+    
+    router.get('/login/google/callback',
+        passport.authenticate('google', {
+            successRedirect: '/home',
+            failureRedirect: '/'
+        })
+    );
 
     return router;
 

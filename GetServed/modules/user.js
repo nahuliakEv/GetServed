@@ -19,24 +19,27 @@ var userSchema = new Schema({
 		username: String,
         displayName: String 
        },
+
+    google: {
+        id: String,
+        token: String,
+        email: String,
+        name: String
+    },
     
     local: {
         id: Number,
     fullName: {
         type: String,
-        required: true
     },
     email: {
         type: String,
-        required: true
     },
     password: {
         type: String,
-        required: true
     },
     pincode: {
         type: Number,
-        required: true,
         min: 4
     },
     type: {

@@ -2,6 +2,7 @@ var login = require("./login");
 var registration = require("./registration");
 var facebook = require('./facebook');
 var twitter = require('./twitter');
+var google = require('./google');
 var User = require("../modules/user");
 
 module.exports = (passport) => {
@@ -21,4 +22,5 @@ module.exports = (passport) => {
     registration(passport);
     facebook(passport);
     twitter(passport);
+    google(passport);
 }

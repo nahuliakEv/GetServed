@@ -1,17 +1,17 @@
-var TwitterStrategy  = require('passport-twitter').Strategy;
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var User = require('../modules/user');
 
 module.exports = (passport) => {
-    passport.use('twitter', new TwitterStrategy({
-        consumerKey     : "twitterConfig.apikey",
-        consumerSecret  : "twitterConfig.apisecret",
-        callbackURL     : "twitterConfig.callbackURL"
+    passport.use('google', new GoogleStrategy({
+        clientID: "625859847152-1vmh3kbbnkhraqa992ptf7v7253lroav.apps.googleusercontent.com",
+        clientSecret: "eo9L8EioVxOfCxSk5n6r_OPO",
+        callbackURL: "http://localhost:3000/login/google/callback"
     },
-        function(token, tokenSecret, profile, done) {
+        function(token, refreshToken, profile, done) {
 
         findOrCreateUser = () => {
 
-            User.findOne({'twitter.id' : profile.id}, (err, user) => {
+            User.findOne({'google.id' : profile.id}, (err, user) => {
                 if(err){
                     console.log(err);
                     return done(err);
@@ -22,10 +22,10 @@ module.exports = (passport) => {
                 } else {
                     var newUser = new User();
                     
-                    newUser.twitter.id  = profile.id;
-	                newUser.twitter.token = token;
-	                newUser.twitter.username = profile.username;
-	                newUser.twitter.displayName = profile.displayName;
+                    newUser.google.id    = profile.id;
+                    newUser.google.token = token;
+                    newUser.google.name  = profile.displayName;
+                    newUser.google.email = profile.emails[0].value;
                     
                     newUser.save((err) => {
                         if(err){
