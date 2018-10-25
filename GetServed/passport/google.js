@@ -5,7 +5,7 @@ module.exports = (passport) => {
     passport.use('google', new GoogleStrategy({
         clientID: "625859847152-1vmh3kbbnkhraqa992ptf7v7253lroav.apps.googleusercontent.com",
         clientSecret: "eo9L8EioVxOfCxSk5n6r_OPO",
-        callbackURL: "http://localhost:3000/login/google/callback"
+        callbackURL: "https://getserved20181024044343.azurewebsites.net/login/google/callback"
     },
         function(token, refreshToken, profile, done) {
 
