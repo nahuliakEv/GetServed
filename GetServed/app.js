@@ -10,6 +10,7 @@ var passport = require("passport");
 var expressSession = require("express-session");
 var mongoose = require('mongoose');
 var settings = require('./modules/settings');
+var cors = require("cors");
 
 mongoose.connect(settings.urlMongo, {useNewUrlParser: true});
 
@@ -40,13 +41,30 @@ app.use(flash());
 var initPassport = require('./passport/init');
 initPassport(passport);
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+var routes = require('./routes/index')(passport);
+
+// var coreOptions = {
+//     origin: 'http://localhost:4200/',
+//     optionsSuccessStatus: 200
+// }
+
+// app.use(cors(coreOptions));
+
+app.use(function(req, response, next) {
+    response.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200/');
+
+    // Request methods you wish to allow
+    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    response.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    response.setHeader('Access-Control-Allow-Credentials', true);
     next();
   });
 
-var routes = require('./routes/index')(passport);
 app.use('/', routes);
 
 // catch 404 and forward to error handler
