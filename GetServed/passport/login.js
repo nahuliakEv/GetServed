@@ -10,16 +10,17 @@ module.exports = (passport) => {
         passReqToCallback: true
     },
         (request, email, password, done) => {
-            User.findOne({ 'email': email },
+            User.findOne({ 'local.email': email },
                 (err, user) => {
                     if (err) return done(err);
                     if (!user) {
+                        console.log(user);
                         console.log("User not found!");
-                        return done(null, false, request.flash('message', 'User not found.'));
+                        return done(null, false);
                     }
                     if (!isValidPassword(user, password)) {
                         console.log("Invalid password");
-                        return done(null, false, request.flash('message', 'Invalid password.'));
+                        return done(null, false);
                     }
 
                     return done(null, user);
@@ -31,6 +32,6 @@ module.exports = (passport) => {
     )
 
     var isValidPassword = function (user, password) {
-        return bCrypt.compareSync(password, user.password);
+        return bCrypt.compareSync(password, user.local.password);
     }
 }

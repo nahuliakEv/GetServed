@@ -40,7 +40,6 @@ var userSchema = new Schema({
     },
     pincode: {
         type: Number,
-        min: 4
     },
     type: {
         type: String,

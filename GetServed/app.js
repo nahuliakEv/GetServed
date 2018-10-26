@@ -10,6 +10,7 @@ var passport = require("passport");
 var expressSession = require("express-session");
 var mongoose = require('mongoose');
 var settings = require('./modules/settings');
+var app = express();
 var cors = require("cors");
 
 mongoose.connect(settings.urlMongo, {useNewUrlParser: true});
@@ -17,7 +18,6 @@ mongoose.connect(settings.urlMongo, {useNewUrlParser: true});
 var routes = require('./routes/index');
 var flash = require('connect-flash');
 
-var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,8 +32,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressSession({
     resave: false,
-    saveUninitialized: false,
-    secret: 'mySecretKey'}));
+    saveUninitialized: true,
+    secret: 'mySecretKey',
+    name: 'sessionId',
+    //store: "c:\\Users\\User\\source\\repos\\GetServed\\GetServed\\text.txt"
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -43,27 +46,27 @@ initPassport(passport);
 
 var routes = require('./routes/index')(passport);
 
-// var coreOptions = {
-//     origin: 'http://localhost:4200/',
-//     optionsSuccessStatus: 200
-// }
+var coreOptions = {
+    // origin: 'http://localhost:8100/',
+    // optionsSuccessStatus: 200
+}
 
-// app.use(cors(coreOptions));
+app.use(cors(coreOptions));
 
-app.use(function(req, response, next) {
-    response.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200/');
+// app.use(function(req, response, next) {
+//     response.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200/');
 
-    // Request methods you wish to allow
-    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//     // Request methods you wish to allow
+//     response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
-    // Request headers you wish to allow
-    response.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//     // Request headers you wish to allow
+//     response.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
 
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    response.setHeader('Access-Control-Allow-Credentials', true);
-    next();
-  });
+//     // Set to true if you need the website to include cookies in the requests sent
+//     // to the API (e.g. in case you use sessions)
+//     response.setHeader('Access-Control-Allow-Credentials', true);
+//     next();
+//   });
 
 app.use('/', routes);
 

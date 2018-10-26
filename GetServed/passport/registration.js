@@ -12,14 +12,14 @@ module.exports = (passport) => {
 
             findOrCreateUser = () => {
 
-                User.findOne({'email': email}, (err, user) => {
+                User.findOne({'local.email': email}, (err, user) => {
                     if(err){
                         console.log(err);
                         return done(err);
                     }
                     if(user){
                         console.log("User already exists with this email.");
-                        return done(null, false, request.flash('message','User Already Exists'));
+                        return done(null, false);
                     } else {
                         var newUser = new User();
 

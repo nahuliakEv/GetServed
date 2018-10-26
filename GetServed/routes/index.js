@@ -1,6 +1,7 @@
 ﻿'use strict';
 var express = require('express');
 var router = express.Router();
+var User = require('../modules/user');
 
 var isAuthenticated = function (request, response, next) {
 	// if user is authenticated in the session, call the next() to call the next request handler 
@@ -9,7 +10,7 @@ var isAuthenticated = function (request, response, next) {
 	if (request.isAuthenticated())
 		return next();
 	// if the user is not authenticated then redirect him to the login page
-	res.redirect('/');
+	response.redirect('/');
 }
 
 module.exports = (passport) => {
@@ -17,23 +18,37 @@ module.exports = (passport) => {
         response.render('index', { title: 'Express' });
     });
     
+    router.get('/users', (request, response, ) => {
+        User.find({}, (err, users) => {
+            response.send(users);
+        })
+    })
+
+    router.get("/login", (request, response) => {
+        response.send({status: 'ERROR', message: 'Login or password is incorrect.'})
+    })
+
     router.post("/login", passport.authenticate('login', {
-        successRedirect: '/home',
-        failureRedirect: '/',
+        failureRedirect: '/login',
         failureFlash: true
-    }));
-    
-    router.get('/registration', (request, response) => {
-        response.send('registration page');
+    }), (request, response) => {
+        if (!request.body) return response.sendStatus(400);
+        response.json(200, {status: 'OK', message: 'Login is successful'})
     });
-    
+
+    router.get('/registration', (req, res) => {
+        res.send({status: 'ERROR', message: 'User already exists with this email.'});
+    })
+
     router.post('/registration', passport.authenticate('registration', {
-        successRedirect: '/home',
         failureRedirect: '/registration',
         failureFlash: true
-    }));
+    }), (request, response) => {
+        console.log(request);
+        if (!request.body) return response.sendStatus(400);
+        response.json(200, {status: 'OK', message: 'Registration is successful'})
+    });
 
-    
     router.get('/home', isAuthenticated, (request, response) => {
         response.send('home page');
     });
@@ -67,9 +82,11 @@ module.exports = (passport) => {
     
     router.get('/login/google/callback',
         passport.authenticate('google', {
-            successRedirect: '/home',
-            failureRedirect: '/'
-        })
+            //successRedirect: '/home',
+            //failureRedirect: '/'
+        }), (request, response) => {
+            response.send("Success");
+        }
     );
 
     return router;
