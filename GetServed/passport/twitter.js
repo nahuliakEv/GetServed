@@ -1,5 +1,5 @@
 var TwitterStrategy  = require('passport-twitter').Strategy;
-var User = require('../modules/user');
+var User = require('../shemas/user');
 
 module.exports = (passport) => {
     passport.use('twitter', new TwitterStrategy({

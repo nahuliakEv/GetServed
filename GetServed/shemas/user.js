@@ -48,7 +48,8 @@ var userSchema = new Schema({
     }
 },
 {
-    versionKey: false
+    versionKey: false,
+    collection: 'users'
 }
 );
 

@@ -1,5 +1,5 @@
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
-var User = require('../modules/user');
+var User = require('../shemas/user');
 
 module.exports = (passport) => {
     passport.use('google', new GoogleStrategy({

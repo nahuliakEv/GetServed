@@ -3,7 +3,7 @@ var registration = require("./registration");
 var facebook = require('./facebook');
 var twitter = require('./twitter');
 var google = require('./google');
-var User = require("../modules/user");
+var User = require("../shemas/user");
 
 module.exports = (passport) => {
     passport.serializeUser(function(user, done) {
