@@ -23,6 +23,10 @@ var restaurantSchema = new Schema({
             type: String,
             required: true
         },
+        street: {
+            type: String,
+            required: true
+        },
         postcode: {
             type: Number,
             required: true
