@@ -7,6 +7,7 @@ var countries = require ('countries-cities').getCountries();
 var cities = require('countries-cities');
 var Booking = require('../shemas/booking');
 var Menu = require('../shemas/menu')
+var Order = require('../shemas/order')
 
 var isAuthenticated = function (request, response, next) {
 	// if user is authenticated in the session, call the next() to call the next request handler 
@@ -23,6 +24,16 @@ module.exports = (passport) => {
         response.render('index', { title: 'Express' });
     });
     
+    router.post('/booking/order', (request, response) => {
+        var order = new Order();
+        order.bookingId = request.body.bookingId;
+        order.dishes = request.body.dishes;
+        Order.create(order, (err, result) => {
+            if (err) response.send({ status: "ERROR" });
+            response.send({status: "OK", message: "Order saved"})            
+        })
+    }),
+
     router.get('/menu/:idRestaurant', (request, response) => {
         Menu.findOne({restaurantId: request.params["idRestaurant"]}, (err, res) => {
             if (err) response.send({ status: "ERROR" });
