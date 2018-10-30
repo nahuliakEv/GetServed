@@ -17,7 +17,7 @@ module.exports = (passport) => {
             done(err, user);
         });
     });
-
+    
     login(passport);
     registration(passport);
     facebook(passport);

@@ -26,9 +26,7 @@ module.exports = (passport) => {
                     return done(null, user);
                 }
             )
-
         })
-
     )
 
     var isValidPassword = function (user, password) {

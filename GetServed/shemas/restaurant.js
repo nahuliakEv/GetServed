@@ -44,13 +44,17 @@ var restaurantSchema = new Schema({
         type:Number,
         required: true
     },
-    maxSitsTable: {
+    maxSeatsTable: {
         type: Number,
         required: true
     },
     facilities: {
-        type: [String],
-        required: true
+            cash: Boolean,
+            cads: Boolean,
+            alcohol: Boolean,
+            seats: Boolean,
+            cond: Boolean,
+            nonVeg: Boolean
     },
     cuisines: {
         type: [String],
@@ -76,6 +80,7 @@ var restaurantSchema = new Schema({
         type: [String],
         required: true
     },
+
     ownerId: {
         type: ObjectId,
         required: true
