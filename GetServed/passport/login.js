@@ -14,7 +14,6 @@ module.exports = (passport) => {
                 (err, user) => {
                     if (err) return done(err);
                     if (!user) {
-                        console.log(user);
                         console.log("User not found!");
                         return done(null, false);
                     }

@@ -8,6 +8,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require("passport");
 var expressSession = require("express-session");
+var MongoStore = require("connect-mongo")(expressSession);
 var mongoose = require('mongoose');
 var settings = require('./modules/settings');
 var app = express();
@@ -32,10 +33,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressSession({
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     secret: 'mySecretKey',
     name: 'sessionId',
-    //store: "c:\\Users\\User\\source\\repos\\GetServed\\GetServed\\text.txt"
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection,
+        ttl: 3*24*60*60,
+        autoRemove: 'interval',
+        autoRemoveInterval: 10
+    })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -45,27 +51,7 @@ var initPassport = require('./passport/init');
 initPassport(passport);
 var routes = require('./routes/index')(passport);
 
-var coreOptions = {
-    // origin: 'http://localhost:8100/',
-    // optionsSuccessStatus: 200
-}
-
-app.use(cors(coreOptions));
-
-// app.use(function(req, response, next) {
-//     response.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200/');
-
-//     // Request methods you wish to allow
-//     response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-//     // Request headers you wish to allow
-//     response.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-//     // Set to true if you need the website to include cookies in the requests sent
-//     // to the API (e.g. in case you use sessions)
-//     response.setHeader('Access-Control-Allow-Credentials', true);
-//     next();
-//   });
+app.use(cors());
 
 app.use('/', routes);
 

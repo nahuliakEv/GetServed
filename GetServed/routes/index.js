@@ -6,8 +6,21 @@ var Restaurants = require('../shemas/restaurant');
 var countries = require ('countries-cities').getCountries();
 var cities = require('countries-cities');
 var Booking = require('../shemas/booking');
-var Menu = require('../shemas/menu')
-var Order = require('../shemas/order')
+var Menu = require('../shemas/menu');
+var settings = require('../modules/settings');
+var Order = require('../shemas/order');
+var Photo = require('../shemas/photo');
+var multer  = require('multer');
+var path = require('path');
+var storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'public/images/uploads')
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+    }
+});
+var upload = multer({storage: storage});
 
 var isAuthenticated = function (request, response, next) {
 	// if user is authenticated in the session, call the next() to call the next request handler 
@@ -24,6 +37,22 @@ module.exports = (passport) => {
         response.render('index', { title: 'Express' });
     });
     
+    router.post('/uploadphoto', upload.single('photo'), function(request, response, next) {
+        let photo = new Photo();
+
+        photo.path = request.file.path;
+        photo.filename = request.file.filename;
+        photo.link = settings.serverUrl + request.file.path.split('public')[1];
+
+        Photo.create(photo, (err, result) => {
+            if (err) {
+                response.send({ status: "ERROR" })
+            } else {
+                response.send({status: "OK", image: result.link})
+            }
+        })
+    });
+
     router.post('/booking/order', (request, response) => {
         var order = new Order();
         order.bookingId = request.body.bookingId;
@@ -56,7 +85,7 @@ module.exports = (passport) => {
             booking.restaurantId = request.body.restaurantId;
             Booking.create(booking, (err, result) => {
                 if (err) response.send({ status: "ERROR" });
-                response.send({status: 'OK', message: "Booking saved"})
+                response.send({status: 'OK', message: "Booking saved", bookingId: result._id})
             })
         } catch (error) {
             response.send({status: "ERROR", message: "Invalid date type"})
@@ -72,54 +101,14 @@ module.exports = (passport) => {
     });
 
     router.get('/restaurants', (request, response) => {
-        // Restaurants.updateMany({}, {facilities: {
-        //     cash: true,
-        //     cads: true,
-        //     alcohol: true,
-        //     seats: true,
-        //     cond: true,
-        //     nonVeg: true
-        // }}, (err, result) => {
-        //     if(err) console.log(err);
-        //     response.send("OK");
-        // });
         Restaurants.find({}, (err, result) => {
             if(err) return console.log(err);
             response.send(result);
         });
-    //     for (let index = 1; index <= 10; index++) {
-    //         Restaurants.create(
-    //             {
-    //                 name: "Restaurant" + index,
-    //                 location: {
-    //                     country: "USA",
-    //                     street: "9189, janskerkhof",
-    //                     city: "midden-drenthe",
-    //                     state: "gelderland",
-    //                     postcode: 65392
-    //                 },
-    //                 rating: 4.7,
-    //                 coordinates: {
-    //                     lat: 15.557,
-    //                     lng: 23.795
-    //                 },
-    //                 tablesCount: 25,
-    //                 maxSitsTable: 7,
-    //                 facilities: {cash: "Cash Accepted"},
-    //                 cuisines: ["South Indian", "Italian", "Ukrainian"],
-    //                 approxCost: "30$",
-    //                 photos: ["https://cdn.discordapp.com/attachments/243025163774328832/506103582123360256/RD1.png"],
-    //                 famousFor: "Indian of Sanjeev Kapoor",
-    //                 reviews: ["review1", "review2" , "review3", "review4", "review5"],
-    //                 ownerId: "5bd495e5ab296e5698748411",
-    //             }
-    //         )
-    //     }
-    //    response.send("OK");
     })
 
     router.get('/users', (request, response, ) => {
-        User.find({}, (err, users) => {
+       User.find({}, (err, users) => {
             response.send(users);
         })
     })
@@ -133,7 +122,8 @@ module.exports = (passport) => {
         failureFlash: true
     }), (request, response) => {
         if (!request.body) return response.sendStatus(400);
-        response.json(200, {status: 'OK', message: 'Login is successful', user: request.session.passport.user})
+        response.json(200, {status: 'OK', message: 'Login is successful', 
+        userId: request.user._id, name: request.user.local.fullName, email: request.user.local.email})
     });
 
     router.get('/registration', (req, res) => {

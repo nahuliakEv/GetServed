@@ -18,8 +18,9 @@ var menuSchema = new Schema({
             type: String,
             required: true
         },
-        photos: {
-            type: [String]
+        photo: {
+            type: String,
+            required: true
         },
         dishes: [{
             name: {
@@ -30,8 +31,9 @@ var menuSchema = new Schema({
                 type: String,
                 required: true
             },
-            photos: {
-                type: [String]
+            photo: {
+                type: String,
+                required: true
             },
             price: {
                 type: Number,
@@ -39,6 +41,22 @@ var menuSchema = new Schema({
             },
             serving: {
                 type: [String]
+            },
+            speciality: {
+                type: Boolean,
+                required: true
+            },
+            spiceLevel: {
+                type: String
+            },
+            nonVegan: {
+                type: Boolean
+            },
+            vegan: {
+                type: Boolean
+            },
+            containsEgg: {
+                type: Boolean
             }
         }]
     }]
