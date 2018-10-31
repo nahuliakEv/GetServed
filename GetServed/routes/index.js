@@ -10,34 +10,40 @@ var Menu = require('../shemas/menu');
 var settings = require('../modules/settings');
 var Order = require('../shemas/order');
 var Photo = require('../shemas/photo');
+var DocumentRest = require('../shemas/document');
 var multer  = require('multer');
 var path = require('path');
-var storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, 'public/images/uploads')
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-    }
-});
-var upload = multer({storage: storage});
-
-var isAuthenticated = function (request, response, next) {
-	// if user is authenticated in the session, call the next() to call the next request handler 
-	// Passport adds this method to request object. A middleware is allowed to add properties to
-	// request and response objects
-	if (request.isAuthenticated())
-		return next();
-	// if the user is not authenticated then redirect him to the login page
-	response.send("User not authenticated");
-}
 
 module.exports = (passport) => {
     router.get('/', (request, response) => {
         response.render('index', { title: 'Express' });
     });
-    
-    router.post('/uploadphoto', upload.single('photo'), function(request, response, next) {
+
+    var uploadDocuments = multer({storage: storageDocuments});    
+    router.post('/uploaddocuments', uploadDocuments.array('document', 5), function(request, response, next) {
+        var documents = [];
+        request.files.forEach(file => {
+            let document = new DocumentRest();
+
+            document.path = file.path;
+            document.filename = file.filename;
+            document.link = settings.serverUrl + file.path.split('public')[1];
+            document.restaurantId = request.body.restaurantId;
+
+            documents.push(document);
+        });
+
+        DocumentRest.create(documents, (err, result) => {
+            if (err) {
+                console.log(err)
+            } else {
+                response.send({status: "OK", documents: result})
+            }
+        })
+    });
+
+    var uploadPhoto = multer({storage: storagePhoto});
+    router.post('/uploadphoto', uploadPhoto.single('photo'), function(request, response, next) {
         let photo = new Photo();
 
         photo.path = request.file.path;
@@ -58,8 +64,11 @@ module.exports = (passport) => {
         order.bookingId = request.body.bookingId;
         order.dishes = request.body.dishes;
         Order.create(order, (err, result) => {
-            if (err) response.send({ status: "ERROR" });
-            response.send({status: "OK", message: "Order saved"})            
+            if (err) {
+                response.send({ status: "ERROR" })
+            } else {
+                response.send({status: "OK", message: "Order saved"})
+            }
         })
     }),
 
@@ -181,4 +190,32 @@ module.exports = (passport) => {
 
     return router;
 
+}
+
+var storageDocuments = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'public/documents/uploads')
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+    }
+});
+
+var storagePhoto = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'public/images/uploads')
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+    }
+});
+
+var isAuthenticated = function (request, response, next) {
+	// if user is authenticated in the session, call the next() to call the next request handler 
+	// Passport adds this method to request object. A middleware is allowed to add properties to
+	// request and response objects
+	if (request.isAuthenticated())
+		return next();
+	// if the user is not authenticated then redirect him to the login page
+	response.send("User not authenticated");
 }

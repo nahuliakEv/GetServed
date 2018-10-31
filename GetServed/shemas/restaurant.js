@@ -10,27 +10,13 @@ var restaurantSchema = new Schema({
         type: String,
         required: true
     },
-    location: {
-        country: {
-            type: String,
-            required: true
-        },
-        city: {
-            type: String,
-            required: true
-        },
-        state: {
-            type: String,
-            required: true
-        },
-        street: {
-            type: String,
-            required: true
-        },
-        postcode: {
-            type: Number,
-            required: true
-        },
+    email: {
+        type: String,
+        required: true
+    },
+    phone: {
+        type: String,
+        required: true
     },
     coordinates: {
         lat: {
