@@ -63,11 +63,12 @@ module.exports = (passport) => {
         var order = new Order();
         order.bookingId = request.body.bookingId;
         order.dishes = request.body.dishes;
+        order.fullPrice = request.body.fullPrice;
         Order.create(order, (err, result) => {
             if (err) {
                 response.send({ status: "ERROR" })
             } else {
-                response.send({status: "OK", message: "Order saved"})
+                response.send({status: "OK", message: "Order saved", result: result})
             }
         })
     }),

@@ -18,7 +18,11 @@ var orderSchema = new Schema({
             type: Number,
             required: true
         }
-    }]
+    }],
+    fullPrice:{
+        type: Number,
+        required: true
+    }
 },
 {
     versionKey: false,

@@ -9,20 +9,12 @@ var menuSchema = new Schema({
         type: ObjectId,
         required: true
     },
-    category: [{
+    cuisine: [{
         name: {
             type: String,
             required: true
         },
-        description: {
-            type: String,
-            required: true
-        },
-        photo: {
-            type: String,
-            required: true
-        },
-        dishes: [{
+        category: [{
             name: {
                 type: String,
                 required: true
@@ -35,29 +27,43 @@ var menuSchema = new Schema({
                 type: String,
                 required: true
             },
-            price: {
-                type: Number,
-                required: true
-            },
-            serving: {
-                type: [String]
-            },
-            speciality: {
-                type: Boolean,
-                required: true
-            },
-            spiceLevel: {
-                type: String
-            },
-            nonVegan: {
-                type: Boolean
-            },
-            vegan: {
-                type: Boolean
-            },
-            containsEgg: {
-                type: Boolean
-            }
+            dishes: [{
+                name: {
+                    type: String,
+                    required: true
+                },
+                description: {
+                    type: String,
+                    required: true
+                },
+                photo: {
+                    type: String,
+                    required: true
+                },
+                price: {
+                    type: Number,
+                    required: true
+                },
+                serving: {
+                    type: [String]
+                },
+                speciality: {
+                    type: Boolean,
+                    required: true
+                },
+                spiceLevel: {
+                    type: String
+                },
+                nonVegan: {
+                    type: Boolean
+                },
+                vegan: {
+                    type: Boolean
+                },
+                containsEgg: {
+                    type: Boolean
+                }
+            }]
         }]
     }]
 },

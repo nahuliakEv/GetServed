@@ -21,22 +21,32 @@ var restaurantSchema = new Schema({
     coordinates: {
         lat: {
             type: Number,
-            required: true},
+            required: true
+        },
         lng: {
             type: Number,
-            required: true}
+            required: true
+        }
+    },
+    documents: {
+        type: [String],
+        required: true
+    },
+    billingDetails: {
+        type: [String],
+        required: true
     },
     tablesCount: {
         type:Number,
         required: true
     },
-    maxSeatsTable: {
-        type: Number,
-        required: true
-    },
+    // maxSeatsTable: {
+    //     type: Number,
+    //     required: true
+    // },
     facilities: {
             cash: Boolean,
-            cads: Boolean,
+            cards: Boolean,
             alcohol: Boolean,
             seats: Boolean,
             cond: Boolean,
